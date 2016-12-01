@@ -1,8 +1,9 @@
+
 #include <shape.h>
 #include "star.h"
+#include "timer.h"
 
-static unsigned int count = 150;
-// true if pixel is in rect centerPosed at rectPos
+static int distance = 500;
 int 
 abStarCheck(const AbStar *star, const Vec2 *centerPos, const Vec2 *pixel)
 {
@@ -11,14 +12,12 @@ abStarCheck(const AbStar *star, const Vec2 *centerPos, const Vec2 *pixel)
   int within = 0, axis;
   for (axis = 0; axis < 2; axis ++) {
     int p = pixel->axes[axis];
+    distance -= prand() % 5;
     if (p > bounds.botRight.axes[axis] || p < bounds.topLeft.axes[axis])
       within = 0;
-    else{
-      count--;
-      if(count == 0){
-	within = 1;
-	count = 150;
-      }
+    else if(distance <= 0){
+      within = 1;
+      distance = 650;
     }
   }
   return within;

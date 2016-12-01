@@ -3,6 +3,7 @@
 
 extern unsigned char redrawScreen;
 extern unsigned int bgColor;
+extern unsigned int shipColor;
 
 void asteroids_init();
 void asteroids_draw();

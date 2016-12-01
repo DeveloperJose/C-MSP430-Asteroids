@@ -6,6 +6,7 @@
 #include "mov_layer.h"
 #include "star.h"
 #include "triangle.h"
+#include "rock.h"
 
 #define PLAYER_SIZE 10
 
@@ -17,26 +18,27 @@ AbRectOutline shapeField = {
 Layer layerField = {
   (AbShape *) &shapeField,
   {screenWidth/2, screenHeight/2}, {0,0}, {0,0},
-  COLOR_RED,
+  COLOR_BLACK,
   0
 };
 
 // Starry background
 AbStar shapeStar = {
-  abStarGetBounds, abStarCheck, {screenWidth, screenHeight}
+  abStarGetBounds, abStarCheck, {screenWidth-2, screenHeight-2}
 };
 Layer layerStar = {
   (AbShape *)&shapeStar,
-  {0, 0}, {0,0}, {0,0}, WHITE, &layerField
+  {2, 2}, {0,0}, {0,0}, WHITE, &layerField
 };
 
 // Asteroids
-Layer layerCircle = {
-  (AbShape *)&circle10,
-  {(screenWidth/2)+10, (screenHeight/2)+5}, {0,0}, {0,0}, COLOR_VIOLET,
+AbRock asteroid = { abRockGetBounds, abRockCheck, {6, 7}, 1};
+Layer layerAsteroid1 = {
+  (AbShape *)&asteroid,
+  {(screenWidth/2)+10, (screenHeight/2)+5}, {0,0}, {0,0}, COLOR_WHITE,
   &layerStar,
 };
-MovLayer movLayerCircle = { &layerCircle, {2, 1}, 0};
+MovLayer movLayerAsteroid = { &layerAsteroid1, {2, 1}, 0};
 
 // Player Gun
 AbRect shapePlayerGun = {
@@ -44,10 +46,10 @@ AbRect shapePlayerGun = {
 };
 Layer layerPlayerGun = {
   (AbShape *)&shapePlayerGun,
-  {screenWidth/2, screenHeight/2 - 2}, {0,0}, {0,0}, COLOR_GREEN,
-  &layerCircle
+  {screenWidth/2, screenHeight/2 - 2}, {0,0}, {0,0}, COLOR_VIOLET,
+  &layerAsteroid1
 };
-MovLayer movLayerPlayerGun = { &layerPlayerGun, {0,0}, &movLayerCircle};
+MovLayer movLayerPlayerGun = { &layerPlayerGun, {0,0}, &movLayerAsteroid};
 
 // Player
 AbTriangle playerShape = {
