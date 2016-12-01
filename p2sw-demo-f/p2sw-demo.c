@@ -22,10 +22,12 @@ main()
   drawString5x7(10,10, "switches:", COLOR_GREEN, COLOR_BLUE);
   while (1) {
     u_int switches = p2sw_read(), i;
+
     char str[5];
     for (i = 0; i < 4; i++)
       str[i] = (switches & (1<<i)) ? '-' : '0'+i;
     str[4] = 0;
     drawString5x7(20,20, str, COLOR_GREEN, COLOR_BLUE);
-  } 
+    
+} 
 }
