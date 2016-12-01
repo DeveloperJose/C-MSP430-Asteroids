@@ -47,6 +47,7 @@ Layer layerPlayerGun = {
   {screenWidth/2, screenHeight/2 - 2}, {0,0}, {0,0}, COLOR_GREEN,
   &layerCircle
 };
+MovLayer movLayerPlayerGun = { &layerPlayerGun, {0,0}, &movLayerCircle};
 
 // Player
 AbTriangle playerShape = {
@@ -57,7 +58,7 @@ Layer layerPlayer = {
   {screenWidth/2, screenHeight/2}, {0,0}, {0,0}, COLOR_RED,
   &layerPlayerGun,
 };
-MovLayer movLayerPlayer = { &layerPlayer, {0,0}, &movLayerCircle };
+MovLayer movLayerPlayer = { &layerPlayer, {0,0}, &movLayerPlayerGun };
 
 
 #endif

@@ -12,13 +12,15 @@ abTriangleCheck(const AbTriangle *shape, const Vec2 *centerPos, const Vec2 *pixe
   int size = shape->size;
   
   vec2Sub(&relPos, pixel, centerPos);
-  row = relPos.axes[0];
-  col = relPos.axes[1];
-  row = (row >= 0) ? row : -row;
-  if (col >= 0 && col <= size) {
-    within = row <= col;
+  row = relPos.axes[1]; col = -relPos.axes[0]; /* note that col is negated */
+  row = (row >= 0) ? row : -row;/* row = |row| */
+  if (col >= 0) {		/* not to right of arrow */
+    if (col <= size) {	/* within arrow tip */
+      within = row <= col;
+    } else if (col <= size) {	/* within arrow stem */
+      //within = row <= quarterSize;
+    }
   }
-
   return within;
 }
   
