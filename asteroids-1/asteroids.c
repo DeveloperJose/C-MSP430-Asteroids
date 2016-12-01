@@ -22,8 +22,13 @@ void rotate_right();
 u_char point_overlap(Vec2* p, Region* r);
 u_char region_overlay(Region* r1, Region* r2);
 
+// Number of asteroids
+#define ASTEROIDS 10
+
 // Boolean
 u_char isBulletActive = 0;
+int currentShootFrames = 0;
+#define SHOOTING_DISTANCE 10
 
 // The number of lives given every timethe game restarts
 u_char maxLives = 7;
@@ -77,11 +82,11 @@ Vec2 topSide = {0, -130};
 
 // 0 = Top, 1 = Left, 2 = Bottom, 3 = Right
 // Tells you what direction the player is looking at
-u_char rotationSide = 1;
+u_char rotationSide = 3;
 
 // These coordinates are used for rotation
-int currentX = -D_LENGTH;
-int currentY = -D_LENGTH;
+int currentX = D_LENGTH;
+int currentY = D_LENGTH;
 
 // Region covering the playing field
 Region regionField;
@@ -89,9 +94,7 @@ Region regionField;
 void asteroids_init(){
   layerInit(&layerPlayer);
   layerDraw(&layerPlayer);
-
   layerGetBounds(&layerField, &regionField);
-
   timer_start();
 }
 
@@ -150,6 +153,7 @@ void gameover_update(){
     currentX = -D_LENGTH;
     currentY = -D_LENGTH;
     isBulletActive = 0;
+    currentShootFrames = 0;
     currentScore = currentScore / 100;
     
     asteroids_init();
@@ -184,6 +188,7 @@ void asteroids_update(){
 
   // Warp management
   update_warp();
+
 }
 
 void update_invincibility(){
@@ -217,61 +222,56 @@ void update_input(int input){
   unsigned char top_s3_state_down = (input & 4) ? 0 : 1;
   unsigned char top_s4_state_down = (input & 8) ? 0 : 1;
 
-  /*
-  int tempX = currentX;
-  int tempY = currentY;
-
-  if(tempX < -2)
-    tempX = -2;
-  if(tempY < -2)
-    tempY = -2;
-  if(tempX > 2)
-    tempX = 2;
-  if(tempY > 2)
-    tempY = 2;
+  if(isWarping){
+    (&movLayerPlayer)->velocity = vec2Zero;
+    isWarping = 0;
+  }
   
-  Vec2 newPos = {tempX, tempY};
-  
-  (&movLayerPlayerGun)->velocity = newPos;
-  */
-  
-  // Gun rotation
+  // Rotation of ship
   if(top_s1_state_down){
     rotate_left();  
   }
   else if(top_s2_state_down){
     rotate_right();
   }
-  
+
+  // Ship heavy machine gun
+  // So deadly it can only shoot one at a time 
   if(top_s4_state_down && !isBulletActive){
     isBulletActive = 1;
 
+    // Move the bullet to where the player is
     (&movLayerPlayerGun)->velocity = vec2Zero;
     (&layerPlayerGun)->pos = (&layerPlayer)->pos;
     (&layerPlayerGun)->posNext = (&layerPlayer)->posNext;
     (&layerPlayerGun)->posLast = (&layerPlayer)->posLast;
   }
-  
-  if(!isBulletActive){
+
+   if(!isBulletActive){
+    // Hide the bullet
     (&movLayerPlayerGun)->velocity = vec2Zero;
     (&movLayerPlayerGun)->layer->color = COLOR_BLACK;
-  }
+   }
   else{
     Vec2 newPos = {currentX, currentY};
     (&movLayerPlayerGun)->velocity = newPos;
     (&movLayerPlayerGun)->layer->color = COLOR_GREEN;
-  }
+  
+    
+    currentShootFrames++;
+    if(currentShootFrames >= SHOOTING_DISTANCE){
+      currentShootFrames = 0;
+      isBulletActive = 0;
+      (&movLayerPlayerGun)->velocity = vec2Zero;
+      (&movLayerPlayerGun)->layer->color = COLOR_BLACK;
+    }
+  } 
 
   // Ship acceleration
   if(top_s3_state_down){
     // Accelerate to the new position
     Vec2 newPos = {currentX, currentY};
     (&movLayerPlayer)->velocity = newPos;
-    /*
-    Vec2 catch;
-    vec2Sub(&catch, &layerPlayer.pos,  &layerPlayerGun.pos);
-    (&movLayerPlayerGun)->velocity = catch;
-    */    
     warpCooldown--;
   }
   else{
@@ -285,11 +285,12 @@ void update_input(int input){
 
 void update_rocks(){
   Vec2 pos = (&layerPlayer)->pos;
+  Vec2 bulletPos = (&layerPlayerGun)->pos;
   MovLayer *currentAsteroid = &movLayerAsteroid;
   while(currentAsteroid){
-    AbShape* asteroidShape = (currentAsteroid)->layer->abShape;
+    AbRock* asteroidShape = (AbRock*)(currentAsteroid)->layer->abShape;
 
-    if(((AbRock*)asteroidShape)->isActive){
+    if(asteroidShape->isActive){
       Region asteroidBoundary;
       layerGetBounds((currentAsteroid->layer), &asteroidBoundary);
     
@@ -302,6 +303,13 @@ void update_rocks(){
 	currentScore -= 100;
 	if(currentScore < 0)
 	  currentScore = 0;
+      }
+
+      else if(point_overlap(&bulletPos, &asteroidBoundary)){
+	asteroidShape->isActive = 0;
+	currentAsteroid->layer->color = COLOR_BLACK;
+	currentAsteroid->velocity = vec2Zero;
+	currentScore += 200;
       }
 
       add_randomness(pos.axes[0] + pos.axes[1]);
@@ -325,13 +333,14 @@ void update_warp(){
     }
     // They touched the right side, warp them left
     else if(pos.axes[0] >= (125)){
-      //isWarping = 1;
+      isWarping = 1;
       (&movLayerPlayer)->velocity = leftSide;
       warpRotation = rotationSide;
       warpCooldown = 5;
     }
     // Top, warp to the bottom
     else if(pos.axes[1] <= 15){
+      isWarping = 1;
       (&movLayerPlayer)->velocity = bottomSide;
       warpRotation = rotationSide;
       warpCooldown = 5;
@@ -339,10 +348,10 @@ void update_warp(){
     }
     // Bottom, warp to the top
     else if(pos.axes[1] >= 110){
+      isWarping = 1;
       (&movLayerPlayer)->velocity = topSide;
       warpRotation = rotationSide;
       warpCooldown = 5;
-      
     }
   }
   // Since they are facing the same direction we don't want to warp
