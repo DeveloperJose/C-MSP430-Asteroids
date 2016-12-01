@@ -6,7 +6,7 @@
 #define I 8643 // Increment
 
 void timer_start();
-unsigned int timer_elapsed();
+int timer_elapsed();
 unsigned int prand();
 
 void add_randomness(int value);

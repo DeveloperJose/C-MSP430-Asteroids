@@ -4,8 +4,8 @@
 
 static unsigned int rand_seed = 0;
 
-static unsigned int timer_start_time = 0;
-static unsigned int timer_current_time = 0;
+static int timer_start_time = 0;
+static int timer_current_time = 0;
 
 static unsigned short total_interrupts = 0;
 void wdt_c_handler()
@@ -27,7 +27,7 @@ void timer_start(){
   rand_seed += 1;
 }
 
-unsigned int timer_elapsed(){
+int timer_elapsed(){
   rand_seed += timer_current_time % 5;
   return (timer_current_time - timer_start_time) / 15;
 }

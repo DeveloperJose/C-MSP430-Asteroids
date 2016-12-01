@@ -11,6 +11,9 @@
 
 void score_draw();
 
+void gamewin_draw();
+void gamewin_update();
+
 void gameover_draw();
 void gameover_update();
 
@@ -24,16 +27,19 @@ void rotate_right();
 u_char point_overlap(Vec2* p, Region* r);
 u_char region_overlay(Region* r1, Region* r2);
 
+// Health of the Asteroid BOSS
+int currentBossHealth = 10;
+
 // Boolean
 u_char isBulletActive = 0;
 int currentShootFrames = 0;
-#define SHOOTING_DISTANCE 10
+#define SHOOTING_DISTANCE 18
 
 // The number of lives given every timethe game restarts
-u_char maxLives = 7;
+u_char maxLives = 5;
 
 // The current number of lives
-u_char currentLives = 5;
+u_char currentLives = 3;
 
 // The current score
 int currentScore = 0;
@@ -95,11 +101,16 @@ void asteroids_init(){
   layerDraw(&layerPlayer);
   layerGetBounds(&layerField, &regionField);
   timer_start();
+  
+  drawString5x7(11, 150, "                    ", COLOR_WHITE, COLOR_BLACK);
 }
 
 
 void asteroids_draw(){
-  if(currentLives > 0){
+  if(currentBossHealth <= 0){
+    gamewin_draw();
+  }
+  else if(currentLives > 0){
     movLayerDraw(&movLayerPlayer, &layerPlayer);
     score_draw();
   }
@@ -115,13 +126,17 @@ void score_draw(){
   }
   
   drawString5x7(3, 3, "Lives:", COLOR_WHITE, COLOR_BLACK);
-  char buf[3];
+  char buf[4];
   itoa(currentLives, buf, 10);
   drawString5x7(40, 3, buf, COLOR_WHITE, COLOR_BLACK);
 
   drawString5x7(65, 3, "Score: ", COLOR_WHITE, COLOR_BLACK);
   itoa(currentScore + timer_elapsed(), buf, 10);
   drawString5x7(105, 3, buf, COLOR_WHITE, COLOR_BLACK);
+
+  drawString5x7(11, 150, "Boss Health: ", COLOR_WHITE, COLOR_BLACK);
+  itoa(currentBossHealth, buf, 10);
+  drawString5x7(90, 150, buf, COLOR_WHITE, COLOR_BLACK);
   
 }
 
@@ -131,6 +146,13 @@ void gameover_draw(){
   drawString5x7(11, 150, "(Press any button)", COLOR_WHITE, COLOR_BLACK);
 }
 
+void gamewin_draw(){
+  score_draw();
+
+  drawString5x7(5, 80, "You beat Diego!", COLOR_WHITE, COLOR_BLACK);
+  drawString5x7(8, 100, "Do it again?", COLOR_WHITE,  COLOR_BLACK);
+  drawString5x7(11, 120, "(Press any button)", COLOR_WHITE, COLOR_BLACK);
+}
 
 void gameover_update(){
   int input = p2sw_read();
@@ -154,15 +176,18 @@ void gameover_update(){
     isBulletActive = 0;
     currentShootFrames = 0;
     currentScore = currentScore / 100;
+    currentBossHealth = 5;
     
     asteroids_init();
   }
 }
 
+void gamewin_update(){
+  gameover_update();
+}
+
 
 void asteroids_update(){
-  //buzzer_play();
-  
   // Check if the game is playing
   if(currentLives <= 0){
     gameover_update();
@@ -222,10 +247,10 @@ void update_input(int input){
   unsigned char top_s3_state_down = (input & 4) ? 0 : 1;
   unsigned char top_s4_state_down = (input & 8) ? 0 : 1;
 
-  /*if(isWarping){
+  if(isWarping){
     (&movLayerPlayer)->velocity = vec2Zero;
     isWarping = 0;
-    }*/
+    }
   
   // Rotation of ship
   if(top_s1_state_down){
@@ -300,16 +325,24 @@ void update_rocks(){
 	isInvincible = 1;
 	currentInvFrames = 0;
 	redrawLives = 1;
-	currentScore -= 100;
+	currentScore -= 500;
 	if(currentScore < 0)
 	  currentScore = 0;
       }
 
+      // Bullet vs Asteroid (who wins?)
       else if(point_overlap(&bulletPos, &asteroidBoundary)){
-	asteroidShape->isActive = 0;
-	currentAsteroid->layer->color = COLOR_BLACK;
-	currentAsteroid->velocity = vec2Zero;
-	currentScore += 200;
+	currentBossHealth--;
+	//currentScore += 300;
+	if(currentBossHealth <= 0){
+	  asteroidShape->isActive = 0;
+	  currentAsteroid->layer->color = COLOR_BLACK;
+	  currentAsteroid->velocity = vec2Zero;
+	  currentScore += 500;
+	  Vec2 vel = currentAsteroid->velocity;
+	  Vec2 faster = {vel.axes[0]*2, vel.axes[1]*2};
+	  currentAsteroid->velocity = faster;
+	}
       }
 
       add_randomness(pos.axes[0] + pos.axes[1]);
