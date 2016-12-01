@@ -37,10 +37,10 @@ AbRock asteroid2 = { abRockGetBounds, abRockCheck, {5, 6}, 1};
 // Asteroid 5
 Layer layerAsteroid5 = {
   (AbShape *)&asteroid1,
-  {60, 60}, {0,0}, {0,0}, COLOR_YELLOW,
+  {60, 80}, {0,0}, {0,0}, COLOR_YELLOW,
   &layerStar,
 };
-MovLayer movLayerAsteroid5 = {&layerAsteroid5, {1, 1}, 0}; 
+MovLayer movLayerAsteroid5 = {&layerAsteroid5, {0, 1}, 0}; 
 
 // Asteroid 4
 Layer layerAsteroid4 = {
@@ -48,7 +48,7 @@ Layer layerAsteroid4 = {
   {45, 30}, {0,0}, {0,0}, COLOR_GREEN,
   &layerAsteroid5
 };
-MovLayer movLayerAsteroid4 = {&layerAsteroid4, {-1, 1}, &movLayerAsteroid5}; 
+MovLayer movLayerAsteroid4 = {&layerAsteroid4, {0, 1}, &movLayerAsteroid5}; 
 
 // Asteroid 3
 Layer layerAsteroid3 = {

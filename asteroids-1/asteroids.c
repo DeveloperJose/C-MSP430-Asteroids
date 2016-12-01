@@ -6,6 +6,9 @@
 #include "asteroids_shapes.h"
 #include "rock.h"
 #include "timer.h"
+//#include "buzzer.h"
+//#include "led.h"
+
 void score_draw();
 
 void gameover_draw();
@@ -158,6 +161,8 @@ void gameover_update(){
 
 
 void asteroids_update(){
+  //buzzer_play();
+  
   // Check if the game is playing
   if(currentLives <= 0){
     gameover_update();
@@ -217,10 +222,10 @@ void update_input(int input){
   unsigned char top_s3_state_down = (input & 4) ? 0 : 1;
   unsigned char top_s4_state_down = (input & 8) ? 0 : 1;
 
-  if(isWarping){
+  /*if(isWarping){
     (&movLayerPlayer)->velocity = vec2Zero;
     isWarping = 0;
-  }
+    }*/
   
   // Rotation of ship
   if(top_s1_state_down){
@@ -260,7 +265,7 @@ void update_input(int input){
       (&movLayerPlayerGun)->velocity = vec2Zero;
       (&movLayerPlayerGun)->layer->color = COLOR_BLACK;
     }
-  } 
+  }
 
   // Ship acceleration
   if(top_s3_state_down){
@@ -283,7 +288,7 @@ void update_rocks(){
   Vec2 bulletPos = (&layerPlayerGun)->pos;
   MovLayer *currentAsteroid = &movLayerAsteroid;
   while(currentAsteroid){
-    AbRock* asteroidShape = (AbRock*)(currentAsteroid)->layer->abShape;
+    AbRock* asteroidShape = (AbRock*)((currentAsteroid)->layer->abShape);
 
     if(asteroidShape->isActive){
       Region asteroidBoundary;

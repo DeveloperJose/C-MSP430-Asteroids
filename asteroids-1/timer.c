@@ -11,7 +11,7 @@ static unsigned short total_interrupts = 0;
 void wdt_c_handler()
 {
   total_interrupts++;
-  if(total_interrupts == 4){
+  if(total_interrupts == 3){
     timer_current_time += 1;
   }
   // 15 interrupts / second
