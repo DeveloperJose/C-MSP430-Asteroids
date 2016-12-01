@@ -33,41 +33,38 @@ Layer layerStar = {
 
 // Asteroids
 AbRock asteroid1 = { abRockGetBounds, abRockCheck, {6, 7}, 1};
-AbRock asteroid2 = { abRockGetBounds, abRockCheck, {8, 7}, 1};
-
+AbRock asteroid2 = { abRockGetBounds, abRockCheck, {5, 6}, 1};
 // Asteroid 5
 Layer layerAsteroid5 = {
   (AbShape *)&asteroid1,
-  {(screenWidth/2)+30, (screenHeight/2)+15}, {0,0}, {0,0}, COLOR_WHITE,
+  {60, 60}, {0,0}, {0,0}, COLOR_YELLOW,
   &layerStar,
 };
-MovLayer movLayerAsteroid5 = {&layerAsteroid5, {3, 1}, 0}; 
+MovLayer movLayerAsteroid5 = {&layerAsteroid5, {1, 1}, 0}; 
 
 // Asteroid 4
 Layer layerAsteroid4 = {
   (AbShape *)&asteroid1,
-  {45, 30}, {0,0}, {0,0}, WHITE,
+  {45, 30}, {0,0}, {0,0}, COLOR_GREEN,
   &layerAsteroid5
 };
-MovLayer movLayerAsteroid4 = {&layerAsteroid4, {4, 3}, &movLayerAsteroid5}; 
-
+MovLayer movLayerAsteroid4 = {&layerAsteroid4, {-1, 1}, &movLayerAsteroid5}; 
 
 // Asteroid 3
 Layer layerAsteroid3 = {
   (AbShape *)&asteroid1,
-  {20, 50}, {0,0}, {0,0}, WHITE,
+  {20, 50}, {0,0}, {0,0}, COLOR_RED,
   &layerAsteroid4
 };
-MovLayer movLayerAsteroid3 = {&layerAsteroid3, {3, 2}, &movLayerAsteroid4}; 
-
+MovLayer movLayerAsteroid3 = {&layerAsteroid3, {1, -1}, &movLayerAsteroid4}; 
 
 // Asteroid 2
 Layer layerAsteroid2 = {
-  (AbShape *)&asteroid2,
-  {0, 0}, {0,0}, {0,0}, WHITE,
+  (AbShape *)&asteroid1,
+  {40, 15}, {0,0}, {0,0}, COLOR_BLUE,
   &layerAsteroid3
 };
-MovLayer movLayerAsteroid2 = {&layerAsteroid2, {1, 3}, &movLayerAsteroid3}; 
+MovLayer movLayerAsteroid2 = {&layerAsteroid2, {1, 1}, &movLayerAsteroid3}; 
 
 // Asteroid 1
 Layer layerAsteroid1 = {

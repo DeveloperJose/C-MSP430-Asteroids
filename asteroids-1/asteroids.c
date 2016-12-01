@@ -6,7 +6,6 @@
 #include "asteroids_shapes.h"
 #include "rock.h"
 #include "timer.h"
-
 void score_draw();
 
 void gameover_draw();
@@ -21,9 +20,6 @@ void rotate_left();
 void rotate_right();
 u_char point_overlap(Vec2* p, Region* r);
 u_char region_overlay(Region* r1, Region* r2);
-
-// Number of asteroids
-#define ASTEROIDS 10
 
 // Boolean
 u_char isBulletActive = 0;
@@ -210,8 +206,7 @@ void update_invincibility(){
       isInvincible = 0;
       // Set the color back to the original
       (&layerPlayer)->color = shipColor;
-    }
-    
+    }    
   }
 }
   
@@ -247,7 +242,7 @@ void update_input(int input){
     (&layerPlayerGun)->posLast = (&layerPlayer)->posLast;
   }
 
-   if(!isBulletActive){
+  if(!isBulletActive){
     // Hide the bullet
     (&movLayerPlayerGun)->velocity = vec2Zero;
     (&movLayerPlayerGun)->layer->color = COLOR_BLACK;

@@ -2,14 +2,14 @@
 #include <libTimer.h>
 #include <shape.h>
 #include "asteroids.h"
-#include "led.h"
-#include "buzzer.h"
+//#include "led.h"
+//#include "buzzer.h"
 
 void main()
 {
   configureClocks();
-  led_init();
-  buzzer_init();
+  //led_init();
+  //buzzer_init();
   shapeInit();
   lcd_init();
   p2sw_init(15);
