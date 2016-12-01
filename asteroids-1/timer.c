@@ -11,7 +11,7 @@ static unsigned short total_interrupts = 0;
 void wdt_c_handler()
 {
   total_interrupts++;
-  if(total_interrupts % 3){
+  if(total_interrupts % 4){
     timer_current_time += 1;
   }
   // 15 interrupts / second
@@ -31,8 +31,6 @@ unsigned int timer_elapsed(){
   rand_seed += timer_current_time % 5;
   return (timer_current_time - timer_start_time) / 15;
 }
-
-
 
 void add_randomness(int val){
   rand_seed += val % 255;
