@@ -32,9 +32,46 @@ Layer layerStar = {
 };
 
 // Asteroids
-AbRock asteroid = { abRockGetBounds, abRockCheck, {6, 7}, 1};
+AbRock asteroid1 = { abRockGetBounds, abRockCheck, {6, 7}, 1};
+AbRock asteroid2 = { abRockGetBounds, abRockCheck, {8, 7}, 1};
+
+// Asteroid 5
+Layer layerAsteroid5 = {
+  (AbShape *)&asteroid1,
+  {(screenWidth/2)+30, (screenHeight/2)+15}, {0,0}, {0,0}, COLOR_WHITE,
+  &layerStar,
+};
+MovLayer movLayerAsteroid5 = {&layerAsteroid5, {3, 1}, 0}; 
+
+// Asteroid 4
+Layer layerAsteroid4 = {
+  (AbShape *)&asteroid1,
+  {45, 30}, {0,0}, {0,0}, WHITE,
+  &layerAsteroid5
+};
+MovLayer movLayerAsteroid4 = {&layerAsteroid4, {4, 3}, &movLayerAsteroid5}; 
+
+
+// Asteroid 3
+Layer layerAsteroid3 = {
+  (AbShape *)&asteroid1,
+  {20, 50}, {0,0}, {0,0}, WHITE,
+  &layerAsteroid4
+};
+MovLayer movLayerAsteroid3 = {&layerAsteroid3, {3, 2}, &movLayerAsteroid4}; 
+
+
+// Asteroid 2
+Layer layerAsteroid2 = {
+  (AbShape *)&asteroid2,
+  {0, 0}, {0,0}, {0,0}, WHITE,
+  &layerAsteroid3
+};
+MovLayer movLayerAsteroid2 = {&layerAsteroid2, {1, 3}, &movLayerAsteroid3}; 
+
+// Asteroid 1
 Layer layerAsteroid1 = {
-  (AbShape *)&asteroid,
+  (AbShape *)&asteroid1,
   {(screenWidth/2)+10, (screenHeight/2)+5}, {0,0}, {0,0}, COLOR_WHITE,
   &layerStar,
 };
@@ -54,7 +91,7 @@ MovLayer movLayerPlayerGun = { &layerPlayerGun, {0,0}, &movLayerAsteroid};
 // Player
 AbTriangle playerShape = {
   abTriangleGetBounds, abTriangleCheck, PLAYER_SIZE
-};
+  };
 Layer layerPlayer = {
   (AbShape *)&playerShape,
   {screenWidth/2, screenHeight/2}, {0,0}, {0,0}, COLOR_RED,
