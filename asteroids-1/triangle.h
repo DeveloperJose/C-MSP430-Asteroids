@@ -10,7 +10,6 @@ typedef struct AbTriangle_s {
   void (*getBounds)(const struct AbTriangle_s *shape, const Vec2 *centerPos, Region *bounds);
   int (*check)(const struct AbTriangle_s *shape, const Vec2 *centerPos, const Vec2 *pixelLoc);
   int size;
-  int angle;
 } AbTriangle;
 
 /** As required by AbShape

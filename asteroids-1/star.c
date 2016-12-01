@@ -7,7 +7,7 @@ int
 abStarCheck(const AbStar *star, const Vec2 *centerPos, const Vec2 *pixel)
 {
   Region bounds;
-  abRectGetBounds(star, centerPos, &bounds);
+  abStarGetBounds(star, centerPos, &bounds);
   int within = 0, axis;
   for (axis = 0; axis < 2; axis ++) {
     int p = pixel->axes[axis];

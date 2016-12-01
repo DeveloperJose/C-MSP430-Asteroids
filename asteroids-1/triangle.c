@@ -12,12 +12,13 @@ abTriangleCheck(const AbTriangle *shape, const Vec2 *centerPos, const Vec2 *pixe
   int size = shape->size;
   
   vec2Sub(&relPos, pixel, centerPos);
-  row = relPos.axes[1]; col = -relPos.axes[0];
+  row = relPos.axes[0];
+  col = relPos.axes[1];
   row = (row >= 0) ? row : -row;
   if (col >= 0 && col <= size) {
-      within = row <= col;
-    }
+    within = row <= col;
   }
+
   return within;
 }
   
@@ -32,4 +33,5 @@ abTriangleGetBounds(const AbTriangle *shape, const Vec2 *centerPos, Region *boun
   bounds->topLeft.axes[1] = centerPos->axes[1] - size;
   bounds->botRight.axes[0] = centerPos->axes[0];
   bounds->botRight.axes[1] = centerPos->axes[1] + size;
+  
 }

@@ -1,29 +1,30 @@
 #include <msp430.h>
-#include <libTimer.h>
 #include <lcdutils.h>
 #include <lcddraw.h>
 #include <p2switches.h>
 #include <shape.h>
-#include <abCircle.h>
 
 #include "asteroids_shapes.h"
 
-// Region covering the playing field
-Region regionField;
+u_char redrawScreen = 1;
+u_int bgColor = COLOR_BLACK;
 
 // Number of possible rotation directions
 #define DIRECTIONS 32
 #define D_LENGTH DIRECTIONS / 8
+#define GRAVITY 10
+
+unsigned char warping = 0;
+unsigned int acceleration = 0;
+unsigned char side = 0;
+Vec2 warpPos;
 
 // These coordinates are used for rotation
 int currentX = 0;
 int currentY = -D_LENGTH;
 
-#define GRAVITY 10
-unsigned char warping = 0;
-unsigned int acceleration = 0;
-unsigned char side = 0;
-Vec2 warpPos;
+// Region covering the playing field
+Region regionField;
 
 void asteroids_init(){
   layerInit(&layerPlayer);
@@ -41,15 +42,17 @@ void score_draw(){
 
 void asteroids_draw(){
   score_draw();
-  movLayerDraw(&movLayerMain, &layerPlayer);
+  movLayerDraw(&movLayerPlayer, &layerPlayer);
 }
 
 void asteroids_update(){
-  movLayerAdvance(&movLayerMain, &fieldFence);
+  movLayerAdvance(&movLayerPlayer, &regionField);
   int input = p2sw_read();
 
   if(!input) return;
+
   redrawScreen = 1;
+  
   unsigned char top_s1_state_down = (input & 1) ? 0 : 1;
   unsigned char top_s2_state_down = (input & 2) ? 0 : 1;
   unsigned char top_s3_state_down = (input & 4) ? 0 : 1;
@@ -106,14 +109,14 @@ void asteroids_update(){
   }
   else if(top_s3_state_down){
     Vec2 newPos = {currentX, currentY};
-    (&ml1)->velocity = newPos;
+    (&movLayerPlayer)->velocity = newPos;
   }
   else{
-    (&ml1)->velocity = vec2Zero;
+    (&movLayerPlayer)->velocity = vec2Zero;
   }
 
   if(warping){
-    (&ml1)->velocity = vec2Zero;
+    (&movLayerPlayer)->velocity = vec2Zero;
     warping = 0;
   }
   // They touched the left side, warp them right
@@ -133,5 +136,3 @@ void asteroids_update(){
       	
     }*/
 }
-
-
