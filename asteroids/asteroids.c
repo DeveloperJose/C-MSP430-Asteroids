@@ -6,8 +6,8 @@
 #include "asteroids_shapes.h"
 #include "rock.h"
 #include "timer.h"
-//#include "buzzer.h"
-//#include "led.h"
+#include "buzzer.h"
+#include "led.h"
 
 void score_draw();
 

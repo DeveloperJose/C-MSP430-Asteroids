@@ -1,16 +1,16 @@
 # makfile configuration
 CPU             	= msp430g2553
-CFLAGS          	= -mmcu=${CPU} -Os -I../h -I../h
-
+CFLAGS          	= -mmcu=${CPU} -Os -I../h
+LDFLAGS			= -L../lib -L/opt/ti/msp430_gcc/include/
 #switch the compiler (for the internal make rules)
-CC              = msp430-gcc
-AS              = msp430-as -mmcu=${CPU} -c
+CC              = msp430-elf-gcc
+AS              = msp430-elf-as -mmcu=${CPU} -c
 
 all:shapemotion.elf
 
 #additional rules for files
 shapemotion.elf: main.o asteroids.o mov_layer.o timer.o str_util.o star.o triangle.o rock.o
-	${CC} -mmcu=${CPU}   -o $@ $^ -L../lib -lTimer -lLcd -lShape -lCircle -lp2sw
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd -lShape -lp2sw
 
 load: shapemotion.elf
 	mspdebug rf2500 "prog $^"
