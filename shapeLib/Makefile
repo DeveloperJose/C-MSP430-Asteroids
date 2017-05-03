@@ -4,9 +4,9 @@ CPU             = msp430g2553
 CFLAGS          = -mmcu=${CPU} -Os -I../h
 
 #switch the compiler (for the internal make rules)
-CC              = msp430-elf-gcc
-AS              = msp430-elf-as
-AR              = msp430-elf-ar
+CC              = msp430-gcc
+AS              = msp430-as
+AR              = msp430-ar
 
 OBJECTS         = shape.o region.o rect.o vec2.o layer.o rarrow.o
 
